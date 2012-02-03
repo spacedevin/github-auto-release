@@ -40,7 +40,7 @@ $file['path'] = $cache.$file['name'].'.zip';
 $request = json_decode($_POST['payload']);
 
 if ($key != $_REQUEST['key'] && $request->repository->url != 'https://github.com/'.$source.'/'.$repo) {
-	//exit;
+	exit;
 }
 
 

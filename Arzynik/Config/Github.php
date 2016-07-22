@@ -1,5 +1,5 @@
-<?php namespace Arzynik;
-class Config {
+<?php namespace Arzynik\Config;
+class Github {
     protected $password = '';
     protected $userName = '';
     protected $repositories = [];
@@ -15,14 +15,14 @@ class Config {
             unset($data['Github']);
         }
         foreach($data as $repository => $set) {
-            $this->repositories[$repository] = new Repository\Config($repository,$set);
+            $this->repositories[$repository] = new Config\Repository($repository,$set);
         }
     }
     protected function getDataList($iniPath) {
         if($iniPath && is_file($iniPath) && !is_dir($iniPath)) {
             return parse_ini_file($iniPath,true,INI_SCANNER_RAW);
         }
-        return parse_ini_file(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config.ini',true,INI_SCANNER_RAW);
+        return parse_ini_file(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'config.ini',true,INI_SCANNER_RAW);
     }
     public function isBranchAllowed($repository,$branch) {
         if(!$this->exists($repository)) {
@@ -59,6 +59,15 @@ class Config {
             throw new \InvalidArgumentException('This branch may not be deployed: ' . $branch);
         }
         return $this->repositories[$repository]->getLocalPath($branch);
+    }
+    public function mayDeploy($repository,$branch) {
+        if(!$this->exists($repository)) {
+            throw new \InvalidArgumentException('This repository is not configured: ' . $repository);
+        }
+        if(!$this->isBranchAllowed($repository,$branch)) {
+            throw new \InvalidArgumentException('This branch may not be deployed: ' . $branch);
+        }
+        return $this->repositories[$repository]->mayDeploy();
     }
     public static function get() {
         if(isset($GLOBALS[self::class])) {

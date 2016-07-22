@@ -1,8 +1,6 @@
 <?php namespace Arzynik;
-use Arzynik\Github\Download;
-use Arzynik\Github\Repository;
 class Controller {
-    public function run() {
+    protected function mayAccess() {
         if(!isset(apache_request_headers()['X-Hub-Signature'])) {
             header('','',401);
             return 'false';
@@ -14,54 +12,33 @@ class Controller {
             header('','',401);
             return 'false';
         }
-        $zip = new \Zip();
-        foreach($files as $name => $zipfile) {
-            $baseName = substr($name,0,strrpos($name,'/'));
-            @mkdir(sys_get_temp_dir() . $baseName);
-            file_put_contents($cache . $name,file_get_contents($zipfile));
-            $zipedFiles[$name] = $cache . $name;
+        return $jsonData;
+    }
+    public function run() {
+        $jsonData = $this->mayAccess();
+        if(!$jsonData) {
+            return 'false';
         }
-
-        $out = $zip->create($zipedFiles,array(
-            'name' => $file['name'] . '.zip',
-            'destination' => $cache
-        ));
-
-
-        /* delete old downloads */
-
-        $github = new Github();
-
-        $repository = new Repository(array(
-            'source' => $source,
-            'repo' => $repo
-                ),$github);
-
-        foreach($repository->downloads() as $download) {
-            if($download->name . '.zip' == $file['name'] . '.zip') {
-                $res = $download->delete();
-            }
+        $zipFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . explode('/',$jsonData->ref)[2] . '.zip';
+        $zipFolder = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $jsonData->repository->name . '-' . explode('/',$jsonData->ref)[2];
+        (new Service\Download())->run($zipFile,$jsonData->repository->full_name,explode('/',$jsonData->ref)[2]);
+        (new Service\Unzip())->run($zipFile,$zipFolder);
+        $baseFolder = $zipFolder . DIRECTORY_SEPARATOR . Config::get()->getBasePath($jsonData->repository->full_name);
+        if(Config::get()->mayDeploy($jsonData->repository->full_name,explode('/',$jsonData->ref)[2])) {
+            (new Service\Deploy())->run(
+                    $baseFolder,Config::get()->getLocalPath($jsonData->repository->full_name,explode('/',$jsonData->ref)[2])
+            );
         }
-
-        /* add the new download */
-
-        $download = new Download(array(
-            'source' => $source,
-            'repo' => $repo
-                ),$github);
-
-        $download->create(array(
-            'name' => $file['name'] . '.zip',
-            'file' => $file['path'],
-            'description' => $file['description']
-        ));
-
-
-        /* delete everything */
-
-        foreach($files as $name => $zipfile) {
-            unlink($cache . $name);
+        if(explode('/',$jsonData->ref)[2] !== 'master') {
+            return true;
         }
-        unlink($file['path']);
+        $targetFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $jsonData->repository->name . '.' . $version . '.zip';
+        (new Zip($baseFolder))->run($targetFile);
+        (new Task\Version())->run();
+        (new Release($baseFolder))->run($targetFile);
+    }
+    public function __destruct() {
+        unlink($this->zipFile);
+        $this->delete($this->tmpFolder);
     }
 }

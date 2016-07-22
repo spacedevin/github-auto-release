@@ -1,5 +1,5 @@
-<?php namespace Arzynik\Repository;
-class Config {
+<?php namespace Arzynik\Config;
+class Repository {
     protected $key = '';
     protected $repository = '';
     protected $basePath = '';

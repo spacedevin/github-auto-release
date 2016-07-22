@@ -5,4 +5,4 @@ function arzynikClassLoad($class) {
     }
 }
 spl_autoload_register('arzynikClassLoad');
-(new Arzynik\Controller())->run();
+echo (new Arzynik\Controller())->run();

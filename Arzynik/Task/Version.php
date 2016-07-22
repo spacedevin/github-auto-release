@@ -1,21 +1,23 @@
 <?php namespace Arzynik\Task;
+use Arzynik\Config\Github;
+use Arzynik\Service\Github as Github2;
 class Version {
     protected function getCurentVersion() {
-        $data = (new \Arzynik\Service\Github())->send('/repos/' . $repository . '/releases/latest');
+        $data = (new Github2())->send('/repos/' . $repository . '/releases/latest');
         $curVersion = explode('.',preg_replace('/[^\.0-9]/','',$data->tag_name));
         return [isset($curVersion[0])?$curVersion[0]:1,isset($curVersion[1])?$curVersion[1]:0,isset($curVersion[2])?$curVersion[2]:0];
     }
     protected function getChangeLevel($issue) {
-        $data = (new \Arzynik\Service\Github())->send('/repos/' . $repository . '/issues/' + $issue);
+        $data = (new Github2())->send('/repos/' . $repository . '/issues/' + $issue);
         $changed = 0;
         foreach($data->labels as $label) {
-            if(in_array($label->name,\Arzynik\Config\Github::get()->getMainTags($repository))) {
+            if(in_array($label->name,Github::get()->getMainTags($repository))) {
                 return 3;
             }
-            if($changed < 2 && in_array($label->name,\Arzynik\Config\Github::get()->getFeatureTags($repository))) {
+            if($changed < 2 && in_array($label->name,Github::get()->getFeatureTags($repository))) {
                 $changed = 2;
             }
-            if($changed < 1 && in_array($label->name,\Arzynik\Config\Github::get()->getBugTags($repository))) {
+            if($changed < 1 && in_array($label->name,Github::get()->getBugTags($repository))) {
                 $changed = 1;
             }
         }

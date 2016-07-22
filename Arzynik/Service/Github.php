@@ -1,4 +1,5 @@
 <?php namespace Arzynik\Service;
+use InvalidArgumentException;
 class Github {
     protected function setMethodData($url,$data,$method,$contentType,$curl) {
         if($method === 'post') {
@@ -17,7 +18,7 @@ class Github {
             curl_setopt($curl,CURLOPT_HTTPGET,true);
             return $curl;
         }
-        throw new \InvalidArgumentException();
+        throw new InvalidArgumentException();
     }
     protected function getCurl() {
         $curl = curl_init();
@@ -31,6 +32,9 @@ class Github {
         return $curl;
     }
     public function send($url,$data = '',$method = 'get',$contentType = 'application/json') {
+        if(substr($url,0,4) !== 'http') {
+            $url = 'https://github.com/' . $url;
+        }
         $curl = $this->getCurl();
         $this->setMethodData($url,$data,$method,$contentType,$curl);
         return curl_exec($curl);

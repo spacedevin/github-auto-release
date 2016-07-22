@@ -1,4 +1,5 @@
 <?php namespace Arzynik\Config;
+use InvalidArgumentException;
 class Github {
     protected $password = '';
     protected $userName = '';
@@ -15,7 +16,7 @@ class Github {
             unset($data['Github']);
         }
         foreach($data as $repository => $set) {
-            $this->repositories[$repository] = new Config\Repository($repository,$set);
+            $this->repositories[$repository] = new Repository($repository,$set);
         }
     }
     protected function getDataList($iniPath) {
@@ -38,7 +39,7 @@ class Github {
     }
     public function getKey($repository) {
         if(!$this->exists($repository)) {
-            throw new \InvalidArgumentException('This repository is not configured: ' . $repository);
+            throw new InvalidArgumentException('This repository is not configured: ' . $repository);
         }
         return $this->repositories[$repository]->getKey();
     }
@@ -47,25 +48,25 @@ class Github {
     }
     public function getBasePath($repository) {
         if(!$this->exists($repository)) {
-            throw new \InvalidArgumentException('This repository is not configured: ' . $repository);
+            throw new InvalidArgumentException('This repository is not configured: ' . $repository);
         }
         return $this->repositories[$repository]->getBasePath();
     }
     public function getLocalPath($repository,$branch) {
         if(!$this->exists($repository)) {
-            throw new \InvalidArgumentException('This repository is not configured: ' . $repository);
+            throw new InvalidArgumentException('This repository is not configured: ' . $repository);
         }
         if(!$this->isBranchAllowed($repository,$branch)) {
-            throw new \InvalidArgumentException('This branch may not be deployed: ' . $branch);
+            throw new InvalidArgumentException('This branch may not be deployed: ' . $branch);
         }
         return $this->repositories[$repository]->getLocalPath($branch);
     }
     public function mayDeploy($repository,$branch) {
         if(!$this->exists($repository)) {
-            throw new \InvalidArgumentException('This repository is not configured: ' . $repository);
+            throw new InvalidArgumentException('This repository is not configured: ' . $repository);
         }
         if(!$this->isBranchAllowed($repository,$branch)) {
-            throw new \InvalidArgumentException('This branch may not be deployed: ' . $branch);
+            throw new InvalidArgumentException('This branch may not be deployed: ' . $branch);
         }
         return $this->repositories[$repository]->mayDeploy();
     }

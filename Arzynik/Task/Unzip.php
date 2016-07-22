@@ -1,4 +1,5 @@
 <?php namespace Arzynik\Task;
+use ZipArchive;
 class Unzip {
     protected function delete($path) {
         if(preg_match('#/\.}\.?$#',$path)) {
@@ -14,7 +15,7 @@ class Unzip {
         unlink($path);
     }
     public function run($zipFile,$zipFolder) {
-        $zip = new \ZipArchive();
+        $zip = new ZipArchive();
         $res = $zip->open($zipFile);
         if(!$res) {
             return false;

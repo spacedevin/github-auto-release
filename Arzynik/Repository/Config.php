@@ -36,8 +36,8 @@ class Config {
     public function isBranchAllowed($branch) {
         return count($this->allowedBranches) === 0 || in_array($branch,$this->allowedBranches);
     }
-    public function mayDeploy($repository) {
-        return count($this->allowedBranches) === 0 || in_array($branch,$this->allowedBranches);
+    public function mayDeploy() {
+        return $this->deploy;
     }
     public function getLocalPath($branch) {
         return str_replace('[branch]',preg_replace('/[^a-z0-9]/i','',$branch),$this->localPath);

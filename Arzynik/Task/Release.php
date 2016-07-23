@@ -24,7 +24,7 @@ class Release {
                 return true;
             }
         }
-        error_log($data);
+        error_log(json_encode($data));
         return false;
     }
 }

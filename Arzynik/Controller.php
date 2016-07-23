@@ -30,7 +30,7 @@ class Controller {
             header('','',401);
             return false;
         }
-        if(!preg_match('#^refs/heads/#',$jsonData->refs)) {
+        if(!preg_match('#^refs/heads/#',$jsonData->ref)) {
             return false;
         }
         return $jsonData;

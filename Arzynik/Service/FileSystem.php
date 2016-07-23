@@ -23,7 +23,7 @@ class FileSystem {
      * @param string $path
      * @return void
      */
-    protected function getFiles($path,&$list) {
+    public function getFiles($path,&$list) {
         if(preg_match('#/\.\.?$#',$path)) {
             return;
         }

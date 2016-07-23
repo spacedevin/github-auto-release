@@ -20,23 +20,6 @@ class FileSystem {
     }
     /**
      *
-     * @param string $path
-     * @return void
-     */
-    public function getFiles($path,&$list) {
-        if(preg_match('#/\.\.?$#',$path)) {
-            return;
-        }
-        if(is_dir($path)) {
-            foreach(scandir($path) as $file) {
-                $this->getFiles($path . DIRECTORY_SEPARATOR . $file,$list);
-            }
-            return;
-        }
-        $list[substr($path,strlen($this->basePath) + 1)] = $path;
-    }
-    /**
-     *
      * @param string $origin
      * @param string $target
      * @return void

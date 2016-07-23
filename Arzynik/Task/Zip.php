@@ -19,7 +19,24 @@ class Zip {
      */
     function __construct($basePath) {
         $this->basePath = $basePath;
-        (new FileSystem())->getFiles($this->basePath,$this->files);
+        $this->getFiles($this->basePath);
+    }
+    /**
+     *
+     * @param string $path
+     * @return void
+     */
+    public function getFiles($path) {
+        if(preg_match('#/\.\.?$#',$path)) {
+            return;
+        }
+        if(is_dir($path)) {
+            foreach(scandir($path) as $file) {
+                $this->getFiles($path . DIRECTORY_SEPARATOR . $file);
+            }
+            return;
+        }
+        $this->files[substr($path,strlen($this->basePath) + 1)] = $path;
     }
     /**
      *

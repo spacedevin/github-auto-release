@@ -33,18 +33,14 @@ class Version {
         }
         $changed = 0;
         $tags = ['main' => Github::get()->getMainTags($repository),'feature' => Github::get()->getFeatureTags($repository),'bug' => Github::get()->getBugTags($repository)];
-        var_dump($data);
         foreach($data->labels as $label) {
             if(in_array($label->name,$tags['main'])) {
-                echo '{' . $issue . ':' . $label->name . ':' . 3 . '}';
                 return 3;
             }
             if($changed < 2 && in_array($label->name,$tags['feature'])) {
-                echo '{' . $issue . ':' . $label->name . ':' . 32 . '}';
                 $changed = 2;
             }
             if($changed < 1 && in_array($label->name,$tags['bug'])) {
-                echo '{' . $issue . ':' . $label->name . ':' . 1 . '}';
                 $changed = 1;
             }
         }

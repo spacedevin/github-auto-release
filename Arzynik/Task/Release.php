@@ -15,8 +15,10 @@ class Release {
         if(!is_object($data)) {
             $data = json_decode($data);
         }
-        if(isset($data->assets_url) && $data->assets_url) {
-            $data = $curl->send($data->assets_url . '?name=' . explode('/',$repository)[1] . '.zip',file_get_contents($zipFile),'post','application/zip');
+        if(isset($data->upload_url) && $data->upload_url) {
+            $url = preg_replace('/\{.*?\}/','',$data->upload_url) . '?name=' . explode('/',$repository)[1] . '.zip';
+            header('TURL: ' . $url);
+            $data = $curl->send($url,file_get_contents($zipFile),'post','application/zip');
             if(!is_object($data)) {
                 $data = json_decode($data);
             }

@@ -29,7 +29,7 @@ class FileSystem {
         }
         if(is_dir($path)) {
             foreach(scandir($path) as $file) {
-                $this->getFiles($path . DIRECTORY_SEPARATOR . $file);
+                $this->getFiles($path . DIRECTORY_SEPARATOR . $file,$list);
             }
             return;
         }

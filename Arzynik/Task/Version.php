@@ -16,6 +16,9 @@ class Version {
     }
     protected function getChangeLevel($issue,$repository) {
         $data = (new Github2())->send('/repos/' . $repository . '/issues/' + $issue);
+        if(!is_object($data)) {
+            $data = json_decode($data);
+        }
         $changed = 0;
         foreach($data->labels as $label) {
             if(in_array($label->name,Github::get()->getMainTags($repository))) {
@@ -38,7 +41,7 @@ class Version {
             if(is_array($matches) && isset($matches[5])) {
                 foreach(array_unique($matches[5]) as $issue) {
                     $issues[$issue] = $issue;
-                    if($changed < 2) {
+                    if($changed < 3) {
                         $changed = max($changed,$this->getChangeLevel($issue));
                     }
                 }

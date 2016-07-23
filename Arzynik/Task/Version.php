@@ -34,7 +34,7 @@ class Version {
         }
         return $changed;
     }
-    protected function getChange($commits) {
+    protected function getChange($commits,$repository) {
         $changed = 0;
         $issues = [];
         foreach($commits as $commit) {
@@ -43,7 +43,7 @@ class Version {
                 foreach(array_unique($matches[5]) as $issue) {
                     $issues[$issue] = $issue;
                     if($changed < 3) {
-                        $changed = max($changed,$this->getChangeLevel($issue));
+                        $changed = max($changed,$this->getChangeLevel($issue,$repository));
                     }
                 }
             }

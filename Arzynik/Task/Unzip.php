@@ -2,7 +2,7 @@
 use ZipArchive;
 class Unzip {
     protected function delete($path) {
-        if(preg_match('#/\.}\.?$#',$path)) {
+        if(preg_match('#/\.\.?$#',$path)) {
             return;
         }
         if(is_dir($path)) {
@@ -16,8 +16,7 @@ class Unzip {
     }
     public function run($zipFile,$zipFolder) {
         $zip = new ZipArchive();
-        $res = $zip->open($zipFile);
-        if(!$res) {
+        if(!$zip->open($zipFile)) {
             return false;
         }
         if(is_dir($zipFolder)) {

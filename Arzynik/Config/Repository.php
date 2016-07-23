@@ -17,11 +17,11 @@ class Repository {
         if(isset($data['localPath'])) {
             $this->localPath = $data['localPath'];
         }
-        if(isset($data['allowedBranches'])) {
-            $this->allowedBranches = $data['allowedBranches'];
+        if(isset($data['branches'])) {
+            $this->allowedBranches = (array) explode(',',$data['branches']);
         }
         if(isset($data['deploy'])) {
-            $this->allowedBranches = $data['deploy'] !== 'false' && $data['deploy'];
+            $this->deploy = $data['deploy'] !== 'false' && $data['deploy'];
         }
     }
     public function getKey() {

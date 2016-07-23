@@ -1,4 +1,4 @@
-<?php namespace Arzynik;
+<?php namespace Arzynik\Task;
 use Exception;
 use ZipArchive;
 class Zip {
@@ -6,9 +6,10 @@ class Zip {
     protected $files = [];
     function __construct($basePath) {
         $this->basePath = $basePath;
+        $this->getFiles($this->basePath);
     }
     protected function getFiles($path) {
-        if(preg_match('#/\.}\.?$#',$path)) {
+        if(preg_match('#/\.\.?$#',$path)) {
             return;
         }
         if(is_dir($path)) {
@@ -17,20 +18,15 @@ class Zip {
             }
             return;
         }
-        $this->files[substr($path,strlen($this->basePath)) + 1] = $path;
+        $this->files[substr($path,strlen($this->basePath) + 1)] = $path;
     }
     public function run($targetFile) {
-        if(!file_exists($targetFile)) {
-            throw new Exception('Destination directory "' . $targetFile . '" does not exist.');
-        }
-
+        @mkdir(dirname($targetFile),0777,true);
         $zip = new ZipArchive();
-
-        if($zip->open($targetFile,ZIPARCHIVE::OVERWRITE) !== true) {
-            return false;
+        if(!$zip->open($targetFile,ZipArchive::CREATE + ZipArchive::OVERWRITE)) {
+            throw new Exception('Couldn\'t create zip file');
         }
-
-        foreach($this->getFiles($this->basePath) as $filename => $path) {
+        foreach($this->files as $filename => $path) {
             $zip->addFile($path,$filename);
         }
         $zip->close();

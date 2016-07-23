@@ -11,7 +11,7 @@ class Github {
                 $this->username = $data['Github']['username'];
             }
             if(isset($data['Github']['password'])) {
-                $this->username = $data['Github']['password'];
+                $this->password = $data['Github']['password'];
             }
             unset($data['Github']);
         }
@@ -71,8 +71,8 @@ class Github {
         return $this->repositories[$repository]->mayDeploy();
     }
     public static function get() {
-        if(isset($GLOBALS[self::class])) {
-            $GLOBALS[self::class] = new self;
+        if(!isset($GLOBALS[self::class])) {
+            $GLOBALS[self::class] = new Github();
         }
         return $GLOBALS[self::class];
     }

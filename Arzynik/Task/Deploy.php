@@ -1,7 +1,7 @@
 <?php namespace Arzynik\Task;
 class Deploy {
     protected function delete($path) {
-        if(preg_match('#/\.}\.?$#',$path)) {
+        if(preg_match('#/\.\.?$#',$path)) {
             return;
         }
         if(is_dir($path)) {
@@ -14,7 +14,7 @@ class Deploy {
         unlink($path);
     }
     protected function copy($from,$to) {
-        if(preg_match('#\.}\.?$#',$from)) {
+        if(preg_match('#\.\.?$#',$from)) {
             return;
         }
         if(is_dir($from)) {

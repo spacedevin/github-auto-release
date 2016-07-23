@@ -4,7 +4,11 @@ use Arzynik\Service\Github as Github2;
 class Version {
     protected function getCurentVersion($repository) {
         $data = (new Github2())->send('/repos/' . $repository . '/releases/latest');
-        if(!$data || !isset($data->tag_name)) {
+        if(!$data) {
+            return [1,0,0];
+        }
+        $data = json_decode($data);
+        if(!isset($data->tag_name)) {
             return [1,0,0];
         }
         $curVersion = explode('.',preg_replace('/[^\.0-9]/','',$data->tag_name));
@@ -44,7 +48,10 @@ class Version {
     }
     public function run($commits,$repository) {
         $version = $this->getCurentVersion($repository);
+        var_dump($version);
         list($change,$fixed) = $this->getChange($commits,$repository);
+        var_dump($change);
+        var_dump($fixed);
         if($change == 0) {
             $change = 3;
         }

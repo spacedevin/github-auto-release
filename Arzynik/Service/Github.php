@@ -34,7 +34,7 @@ class Github {
     }
     public function send($url,$data = '',$method = 'get',$contentType = 'application/json') {
         if(substr($url,0,4) !== 'http') {
-            $url = 'https://api.github.com/' . $url;
+            $url = 'https://api.github.com' . ($url[0] === '/'?'':'/') . $url;
         }
         $curl = $this->getCurl();
         $this->setMethodData($url,$data,$method,$contentType,$curl);

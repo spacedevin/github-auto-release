@@ -1,6 +1,14 @@
 <?php namespace Arzynik\Task;
 use Arzynik\Service\Github;
 class Release {
+    /**
+     *
+     * @param string $repository
+     * @param string $version
+     * @param int[] $tickets
+     * @param string $zipFile
+     * @return boolean
+     */
     public function run($repository,$version,$tickets,$zipFile) {
         $curl = new Github();
         $data = $curl->send('repos/' . $repository . '/releases','{"tag_name": "' . $version . '","name": "' . $version . '","body": "Automatic Release\n Fixes to #' . implode(', #',$tickets) . '"}','post','application/json');

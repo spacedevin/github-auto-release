@@ -1,9 +1,15 @@
 <?php namespace Arzynik\Task;
 use Arzynik\Config\Github;
 use Arzynik\Service\Github as Github2;
+use stdClass;
 class Version {
+    /**
+     *
+     * @param string $repository
+     * @return int[]
+     */
     protected function getCurentVersion($repository) {
-        $data = (new Github2())->send('/repos/' . $repository . '/releases/latest');
+        $data = (new Github2())->get('/repos/' . $repository . '/releases/latest');
         if(!$data) {
             return [1,0,0];
         }
@@ -14,8 +20,14 @@ class Version {
         $curVersion = explode('.',preg_replace('/[^\.0-9]/','',$data->tag_name));
         return [isset($curVersion[0])?$curVersion[0]:1,isset($curVersion[1])?$curVersion[1]:0,isset($curVersion[2])?$curVersion[2]:0];
     }
+    /**
+     *
+     * @param int $issue
+     * @param string $repository
+     * @return int
+     */
     protected function getChangeLevel($issue,$repository) {
-        $data = (new Github2())->send('/repos/' . $repository . '/issues/' . $issue);
+        $data = (new Github2())->get('/repos/' . $repository . '/issues/' . $issue);
         if(!is_object($data)) {
             $data = json_decode($data);
         }
@@ -38,6 +50,12 @@ class Version {
         }
         return $changed;
     }
+    /**
+     *
+     * @param stdClass[] $commits
+     * @param string $repository
+     * @return array
+     */
     protected function getChange($commits,$repository) {
         $changed = 0;
         $issues = [];
@@ -54,6 +72,12 @@ class Version {
         }
         return [$changed,$issues];
     }
+    /**
+     *
+     * @param stdClass[] $commits
+     * @param string $repository
+     * @return array
+     */
     public function run($commits,$repository) {
         $version = $this->getCurentVersion($repository);
         list($change,$fixed) = $this->getChange($commits,$repository);

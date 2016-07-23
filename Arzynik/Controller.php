@@ -7,8 +7,17 @@ use Arzynik\Task\Unzip;
 use Arzynik\Task\Version;
 use Arzynik\Task\Zip;
 use Exception;
+use stdClass;
 class Controller {
+    /**
+     *
+     * @var string[]
+     */
     protected $tasks = [];
+    /**
+     *
+     * @return boolean|stdClass
+     */
     protected function mayAccess() {
         if(!isset(apache_request_headers()['X-Hub-Signature'])) {
             header('','',401);
@@ -26,6 +35,10 @@ class Controller {
         }
         return $jsonData;
     }
+    /**
+     *
+     * @return string
+     */
     public function run() {
         $jsonData = $this->mayAccess();
         if(!$jsonData) {
@@ -41,6 +54,11 @@ class Controller {
         }
         return json_encode($this->tasks);
     }
+    /**
+     *
+     * @param stdClass $jsonData
+     * @return boolean
+     */
     protected function processGeneral($jsonData) {
         $zipFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . explode('/',$jsonData->ref)[2] . '.zip';
         $zipFolder = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $jsonData->repository->name . '-' . explode('/',$jsonData->ref)[2];
@@ -67,6 +85,13 @@ class Controller {
         }
         return true;
     }
+    /**
+     *
+     * @param stdClass $jsonData
+     * @param string $baseFolder
+     * @param string $zipFile
+     * @return boolean
+     */
     protected function handleMaster($jsonData,$baseFolder,$zipFile) {
         list($version,$tickets) = (new Version())->run($jsonData->commits,$jsonData->repository->full_name);
         $this->tasks[] = 'version';

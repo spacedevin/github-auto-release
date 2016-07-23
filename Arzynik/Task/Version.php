@@ -15,20 +15,24 @@ class Version {
         return [isset($curVersion[0])?$curVersion[0]:1,isset($curVersion[1])?$curVersion[1]:0,isset($curVersion[2])?$curVersion[2]:0];
     }
     protected function getChangeLevel($issue,$repository) {
-        $data = (new Github2())->send('/repos/' . $repository . '/issues/' + $issue);
+        $data = (new Github2())->send('/repos/' . $repository . '/issues/' . $issue);
         if(!is_object($data)) {
             $data = json_decode($data);
         }
         $changed = 0;
         $tags = ['main' => Github::get()->getMainTags($repository),'feature' => Github::get()->getFeatureTags($repository),'bug' => Github::get()->getBugTags($repository)];
+        var_dump($data);
         foreach($data->labels as $label) {
             if(in_array($label->name,$tags['main'])) {
+                echo '{' . $issue . ':' . $label->name . ':' . 3 . '}';
                 return 3;
             }
             if($changed < 2 && in_array($label->name,$tags['feature'])) {
+                echo '{' . $issue . ':' . $label->name . ':' . 32 . '}';
                 $changed = 2;
             }
             if($changed < 1 && in_array($label->name,$tags['bug'])) {
+                echo '{' . $issue . ':' . $label->name . ':' . 1 . '}';
                 $changed = 1;
             }
         }

@@ -17,7 +17,7 @@ class Release {
         }
         if(isset($data->upload_url) && $data->upload_url) {
             $url = preg_replace('/\{.*?\}/','',$data->upload_url) . '?name=' . explode('/',$repository)[1] . '.zip';
-            header('TURL: ' . $url);
+            error_log($url);
             $data = $curl->send($url,file_get_contents($zipFile),'post','application/zip');
             if(!is_object($data)) {
                 $data = json_decode($data);

@@ -52,6 +52,24 @@ class Github {
         }
         return $this->repositories[$repository]->getBasePath();
     }
+    public function getMainTags($repository) {
+        if(!$this->exists($repository)) {
+            throw new InvalidArgumentException('This repository is not configured: ' . $repository);
+        }
+        return $this->repositories[$repository]->getMainTags();
+    }
+    public function getFeatureTags($repository) {
+        if(!$this->exists($repository)) {
+            throw new InvalidArgumentException('This repository is not configured: ' . $repository);
+        }
+        return $this->repositories[$repository]->getFeatureTags();
+    }
+    public function getBugTags($repository) {
+        if(!$this->exists($repository)) {
+            throw new InvalidArgumentException('This repository is not configured: ' . $repository);
+        }
+        return $this->repositories[$repository]->getBugTags();
+    }
     public function getLocalPath($repository,$branch) {
         if(!$this->exists($repository)) {
             throw new InvalidArgumentException('This repository is not configured: ' . $repository);

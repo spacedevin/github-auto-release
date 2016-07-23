@@ -6,6 +6,9 @@ class Repository {
     protected $deploy = true;
     protected $localPath = __DIR__ . DIRECTORY_SEPARATOR . '..';
     protected $allowedBranches = [];
+    protected $mainTags = [];
+    protected $featureTags = [];
+    protected $bugTags = [];
     public function __construct($name,$data) {
         $this->repository = $name;
         if(isset($data['key'])) {
@@ -19,6 +22,15 @@ class Repository {
         }
         if(isset($data['branches'])) {
             $this->allowedBranches = (array) explode(',',$data['branches']);
+        }
+        if(isset($data['main'])) {
+            $this->mainTags = (array) explode(',',$data['main']);
+        }
+        if(isset($data['feature'])) {
+            $this->featureTags = (array) explode(',',$data['feature']);
+        }
+        if(isset($data['bug'])) {
+            $this->bugTags = (array) explode(',',$data['bug']);
         }
         if(isset($data['deploy'])) {
             $this->deploy = $data['deploy'] !== 'false' && $data['deploy'];
@@ -41,5 +53,14 @@ class Repository {
     }
     public function getLocalPath($branch) {
         return str_replace('[branch]',preg_replace('/[^a-z0-9]/i','',$branch),$this->localPath);
+    }
+    public function getMainTags() {
+        return $this->mainTags;
+    }
+    public function getFeatureTags() {
+        return $this->featureTags;
+    }
+    public function getBugTags() {
+        return $this->bugTags;
     }
 }

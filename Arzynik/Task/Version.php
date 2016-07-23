@@ -20,14 +20,15 @@ class Version {
             $data = json_decode($data);
         }
         $changed = 0;
+        $tags = ['main' => Github::get()->getMainTags($repository),'feature' => Github::get()->getFeatureTags($repository),'bug' => Github::get()->getBugTags($repository)];
         foreach($data->labels as $label) {
-            if(in_array($label->name,Github::get()->getMainTags($repository))) {
+            if(in_array($label->name,$tags['main'])) {
                 return 3;
             }
-            if($changed < 2 && in_array($label->name,Github::get()->getFeatureTags($repository))) {
+            if($changed < 2 && in_array($label->name,$tags['feature'])) {
                 $changed = 2;
             }
-            if($changed < 1 && in_array($label->name,Github::get()->getBugTags($repository))) {
+            if($changed < 1 && in_array($label->name,$tags['bug'])) {
                 $changed = 1;
             }
         }

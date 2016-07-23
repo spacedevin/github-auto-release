@@ -4,6 +4,7 @@ class Github {
     protected $password = '';
     protected $userName = '';
     protected $repositories = [];
+    protected static $instance = null;
     public function __construct($iniPath = null) {
         $data = $this->getDataList($iniPath);
         if(isset($data['Github'])) {
@@ -89,9 +90,9 @@ class Github {
         return $this->repositories[$repository]->mayDeploy();
     }
     public static function get() {
-        if(!isset($GLOBALS[self::class])) {
-            $GLOBALS[self::class] = new Github();
+        if(!self::$instance) {
+            self::$instance = new Github();
         }
-        return $GLOBALS[self::class];
+        return self::$instance;
     }
 }

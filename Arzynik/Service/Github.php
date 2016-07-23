@@ -11,11 +11,7 @@ class Github {
             return $curl;
         }
         if($method === 'get') {
-            if(is_array($data) && count($data)) {
-                curl_setopt($curl,CURLOPT_URL,$url . '?' . http_build_query($data));
-            } else {
-                curl_setopt($curl,CURLOPT_URL,$url);
-            }
+            curl_setopt($curl,CURLOPT_URL,$url . (is_array($data) && count($data)?'?' . http_build_query($data):''));
             curl_setopt($curl,CURLOPT_HTTPGET,true);
             return $curl;
         }

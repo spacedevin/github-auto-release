@@ -13,18 +13,18 @@ class Deploy {
         }
         unlink($path);
     }
-    protected function copy($from,$to) {
-        if(preg_match('#\.\.?$#',$from)) {
+    protected function copy($origin,$target) {
+        if(preg_match('#\.\.?$#',$origin)) {
             return;
         }
-        if(is_dir($from)) {
-            mkdir($to,0777);
-            foreach(scandir($from) as $file) {
-                $this->copy($from . DIRECTORY_SEPARATOR . $file,$to . DIRECTORY_SEPARATOR . $file);
+        if(is_dir($origin)) {
+            mkdir($target,0777);
+            foreach(scandir($origin) as $file) {
+                $this->copy($origin . DIRECTORY_SEPARATOR . $file,$target . DIRECTORY_SEPARATOR . $file);
             }
             return;
         }
-        copy($from,$to);
+        copy($origin,$target);
     }
     public function run($originFolder,$targetFolder) {
         $this->delete($targetFolder);

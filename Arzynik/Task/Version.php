@@ -35,8 +35,8 @@ class Version {
         $issues = [];
         foreach($commits as $commit) {
             preg_match_all('/(close(s|d)?|fix(es|ed)|resolve(d|s))\s+#([0-9]+)/i',$commit->message,$matches);
-            if(is_array($matches) && isset($matches[2])) {
-                foreach(array_unique($matches[2]) as $issue) {
+            if(is_array($matches) && isset($matches[5])) {
+                foreach(array_unique($matches[5]) as $issue) {
                     $issues[$issue] = $issue;
                     if($changed < 2) {
                         $changed = max($changed,$this->getChangeLevel($issue));
@@ -48,10 +48,7 @@ class Version {
     }
     public function run($commits,$repository) {
         $version = $this->getCurentVersion($repository);
-        var_dump($version);
         list($change,$fixed) = $this->getChange($commits,$repository);
-        var_dump($change);
-        var_dump($fixed);
         if($change == 0) {
             $change = 3;
         }

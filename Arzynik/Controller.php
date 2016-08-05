@@ -43,8 +43,8 @@ class Controller {
         header("Connection: close");
         ignore_user_abort();
         ob_start();
+        header("Content-Length: 4",true,200);
         echo 'true';
-        header("Content-Length: " + ob_get_length());
         ob_end_flush();
         flush();
         set_time_limit(0);
@@ -60,14 +60,11 @@ class Controller {
         }
         $this->sendOk();
         try {
-            if(!$this->processGeneral($jsonData)) {
-                header('','',500);
-            }
+            $this->processGeneral($jsonData);
         } catch(Exception $e) {
             error_log($e->getTraceAsString());
-            header('','',500);
         }
-        return json_encode($this->tasks);
+        //return json_encode($this->tasks);
     }
     /**
      *

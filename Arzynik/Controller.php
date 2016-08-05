@@ -36,6 +36,20 @@ class Controller {
         return $jsonData;
     }
     /**
+     * prepares for actual work - making sure there's no failure due to longer duration script runs
+     */
+    protected function sendOk() {
+        ob_end_clean();
+        header("Connection: close");
+        ignore_user_abort();
+        ob_start();
+        echo 'true';
+        header("Content-Length: " + ob_get_length());
+        ob_end_flush();
+        flush();
+        set_time_limit(0);
+    }
+    /**
      *
      * @return string
      */
@@ -44,6 +58,7 @@ class Controller {
         if(!$jsonData) {
             return 'false';
         }
+        $this->sendOk();
         try {
             if(!$this->processGeneral($jsonData)) {
                 header('','',500);
